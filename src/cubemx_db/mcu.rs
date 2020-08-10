@@ -11,6 +11,8 @@ mod ip;
 mod pin;
 mod temperature;
 mod voltage;
+mod signal;
+use signal::Signal;
 use crate::text_only_element;
 
 text_only_element!(Core);
