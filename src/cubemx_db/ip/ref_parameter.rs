@@ -1,10 +1,11 @@
 use crate::{
     decode::{AttributeMap, Decode},
     error::Unexpected,
-    Config, Error,
+    Config, Error, cubemx_db::{additional_item::AdditionalItem, value_condition::ValueCondition},
 };
 
-use super::condition::Condition;
+use super::super::condition::Condition;
+
 use super::possible_value::PossibleValue;
 use super::Description;
 #[derive(Debug)]
@@ -23,11 +24,14 @@ pub struct RefParameter {
     pub array_type_element: Option<String>,
     pub ip: Option<String>,
     pub separator: Option<String>,
+    pub mode: Option<String>,
 
     pub default_value: Option<String>,
     pub possible_value: Vec<PossibleValue>,
     pub description: Vec<Description>,
     pub condition: Vec<Condition>,
+    pub value_condition: Vec<ValueCondition>,
+    pub additional_item: Vec<AdditionalItem>,
 }
 
 impl Decode for RefParameter {
@@ -37,13 +41,17 @@ impl Decode for RefParameter {
         let mut possible_value = Vec::new();
         let mut description = Vec::new();
         let mut condition = Vec::new();
+        let mut value_condition = Vec::new();
+        let mut additional_item = Vec::new();
 
         for child in node.children() {
             match child.node_type() {
                 roxmltree::NodeType::Element => match child.tag_name().name() {
                     "Condition" => condition.push(Condition::decode(config, child)?),
+                    "ValueCondition" => value_condition.push(ValueCondition::decode(config, child)?),
                     "Description" => description.push(Description::decode(config, child)?),
                     "PossibleValue" => possible_value.push(PossibleValue::decode(config, child)?),
+                    "AdditionalItem" => additional_item.push(AdditionalItem::decode(config,child)?),
                     _ => Unexpected::element(config, &node, &child)?,
                 },
                 roxmltree::NodeType::Text => Unexpected::text(config, &node, &child)?,
@@ -68,7 +76,10 @@ impl Decode for RefParameter {
             array_type_element: attributes.take_optional("ArrayTypeElement"),
             ip: attributes.take_optional("IP"),
             separator: attributes.take_optional("Separator"),
+            mode: attributes.take_optional("Mode"),
             condition,
+            value_condition,
+            additional_item,
             description,
             possible_value,
         };

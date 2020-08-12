@@ -16,6 +16,7 @@ pub struct RefMode {
     pub comment: Option<String>,
     pub is_abstract: Option<bool>,
     pub group: Option<String>,
+    pub tab_name: Option<String>,
 
     pub condition: Vec<Condition>,
     pub config_for_mode: Vec<ConfigForMode>,
@@ -53,6 +54,7 @@ impl Decode for RefMode {
             comment: attributes.take_optional("Comment"),
             is_abstract: attributes.take_optional_bool("Abstract")?,
             group: attributes.take_optional("Group"),
+            tab_name: attributes.take_optional("TabName"),
             condition,
             config_for_mode,
             bsp_dependency,

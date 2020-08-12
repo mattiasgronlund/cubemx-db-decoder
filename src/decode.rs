@@ -48,17 +48,17 @@ impl<'a> AttributeMap<'a> {
             .to_string())
     }
 
-    // pub(crate) fn take_required_bool(&mut self, name: &str) -> Result<bool, Error> {
-    //     let attribute = self.map.remove(name).ok_or(Error::MissingAttribute {
-    //         attribute_name: name.to_string(),
-    //         node_name: self.node.tag_name().name().to_string(),
-    //         pos: self.node.document().text_pos_at(self.node.range().start),
-    //     })?;
-    //     attribute
-    //         .value()
-    //         .parse::<bool>()
-    //         .map_err(|e| Error::invalid_attribute(&self.node, attribute, Box::from(e)))
-    // }
+    pub(crate) fn take_required_bool(&mut self, name: &str) -> Result<bool, Error> {
+        let attribute = self.map.remove(name).ok_or(Error::MissingAttribute {
+            attribute_name: name.to_string(),
+            node_name: self.node.tag_name().name().to_string(),
+            pos: self.node.document().text_pos_at(self.node.range().start),
+        })?;
+        attribute
+            .value()
+            .parse::<bool>()
+            .map_err(|e| Error::invalid_attribute(&self.node, attribute, Box::from(e)))
+    }
 
     pub(crate) fn take_required_f32(&mut self, name: &str) -> Result<f32, Error> {
         let attribute = self.map.remove(name).ok_or(Error::MissingAttribute {
@@ -85,34 +85,30 @@ impl<'a> AttributeMap<'a> {
     }
 
     pub(crate) fn take_optional_bool(&mut self, name: &str) -> Result<Option<bool>, Error> {
-
-        match self.map
-            .remove(name) {
-                Some(attribute) => {
-                    let value = attribute
-                        .value()
-                        .parse::<bool>()
-                        .map_err(|e| Error::invalid_attribute(&self.node, attribute, Box::from(e)))?;
-                    Ok(Some(value))
-                }
-                None => Ok(None)
+        match self.map.remove(name) {
+            Some(attribute) => {
+                let value = attribute
+                    .value()
+                    .parse::<bool>()
+                    .map_err(|e| Error::invalid_attribute(&self.node, attribute, Box::from(e)))?;
+                Ok(Some(value))
             }
+            None => Ok(None),
+        }
     }
 
-    // pub(crate) fn take_optional_i64(&mut self, name: &str) -> Result<Option<i64>, Error> {
-
-    //     match self.map
-    //         .remove(name) {
-    //             Some(attribute) => {
-    //                 let value = attribute
-    //                     .value()
-    //                     .parse::<i64>()
-    //                     .map_err(|e| Error::invalid_attribute(&self.node, attribute, Box::from(e)))?;
-    //                 Ok(Some(value))
-    //             }
-    //             None => Ok(None)
-    //         }
-    // }
+    pub(crate) fn take_optional_f32(&mut self, name: &str) -> Result<Option<f32>, Error> {
+        match self.map.remove(name) {
+            Some(attribute) => {
+                let value = attribute
+                    .value()
+                    .parse::<f32>()
+                    .map_err(|e| Error::invalid_attribute(&self.node, attribute, Box::from(e)))?;
+                Ok(Some(value))
+            }
+            None => Ok(None),
+        }
+    }
 
     pub(crate) fn take_optional(&mut self, name: &str) -> Option<String> {
         self.map

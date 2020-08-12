@@ -5,13 +5,13 @@ use crate::{
 };
 
 #[derive(Debug)]
-pub struct Condition {
-    pub diagnostic: String,
+pub struct ContextCondition {
     pub expression: String,
+    pub diagnostic: Option<String>,
 }
 
-impl Decode for Condition {
-    type Object = Condition;
+impl Decode for ContextCondition {
+    type Object = ContextCondition;
     fn decode(config: Config, node: roxmltree::Node) -> Result<Self::Object, Error> {
         let mut attributes = AttributeMap::from(node, config);
 
@@ -23,9 +23,9 @@ impl Decode for Condition {
             }
         }
 
-        let result = Condition {
-            diagnostic: attributes.take_required("Diagnostic")?,
+        let result = ContextCondition {
             expression: attributes.take_required("Expression")?,
+            diagnostic: attributes.take_optional("Diagnostic"),
         };
         attributes.report_unexpected_if_not_empty()?;
         Ok(result)

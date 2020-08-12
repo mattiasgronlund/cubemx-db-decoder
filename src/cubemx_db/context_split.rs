@@ -1,30 +1,26 @@
+use super::context_ip::ContextIp;
+
 use crate::{
     decode::{AttributeMap, Decode},
     error::Unexpected,
     Config, Error,
 };
-use super::SpecificParameter;
-use super::RemapBlock;
-
 #[derive(Debug)]
-pub struct PinSignal {
+pub struct ContextSplit {
     pub name: String,
-    pub specific_parameter: Vec<SpecificParameter>,
-    pub remap_block: Vec<RemapBlock>,
+    pub context_ip: Vec<ContextIp>,
 }
 
-impl Decode for PinSignal {
-    type Object = PinSignal;
+impl Decode for ContextSplit {
+    type Object = ContextSplit;
     fn decode(config: Config, node: roxmltree::Node) -> Result<Self::Object, Error> {
         let mut attributes = AttributeMap::from(node, config);
-        let mut specific_parameter = Vec::new();
-        let mut remap_block = Vec::new();
+        let mut context_ip = Vec::new();
 
         for child in node.children() {
             match child.node_type() {
                 roxmltree::NodeType::Element => match child.tag_name().name() {
-                    "SpecificParameter" => specific_parameter.push(SpecificParameter::decode(config, child)?),
-                    "RemapBlock" => remap_block.push(RemapBlock::decode(config, child)?),
+                    "ContextIP" => context_ip.push(ContextIp::decode(config, child)?),
                     _ => Unexpected::element(config, &node, &child)?,
                 },
                 roxmltree::NodeType::Text => Unexpected::text(config, &node, &child)?,
@@ -32,10 +28,9 @@ impl Decode for PinSignal {
             }
         }
 
-        let result = PinSignal {
+        let result = ContextSplit {
             name: attributes.take_required("Name")?,
-            specific_parameter,
-            remap_block,
+            context_ip,
         };
         attributes.report_unexpected_if_not_empty()?;
         Ok(result)

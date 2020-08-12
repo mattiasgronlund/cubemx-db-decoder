@@ -11,9 +11,13 @@ use super::ConfigForMode;
 pub struct Parameter {
     pub name: String,
     pub ref_parameter: Option<String>,
+    pub comment: Option<String>,
+    pub group: Option<String>,
+    pub tab_name: Option<String>,
     pub possible_value: Vec<PossibleValue>,
     pub condition: Vec<Condition>,
     pub config_for_mode: Vec<ConfigForMode>,
+    
 }
 
 impl Decode for Parameter {
@@ -40,6 +44,9 @@ impl Decode for Parameter {
         let result = Parameter {
             name: attributes.take_required("Name")?,
             ref_parameter: attributes.take_optional("RefParameter"),
+            comment: attributes.take_optional("Comment"),
+            group: attributes.take_optional("Group"),
+            tab_name: attributes.take_optional("TabName"),
             possible_value,
             condition,
             config_for_mode,

@@ -7,6 +7,7 @@ pub struct RefSignal {
     pub is_virtual: Option<bool>,
     pub direction: Option<String>,
     pub sharable_group_name: Option<String>,
+    pub exclusive_group_name: Option<String>,
 }
 
 impl Decode for RefSignal {
@@ -28,6 +29,7 @@ impl Decode for RefSignal {
             is_virtual: attributes.take_optional_bool("Virtual")?,
             direction: attributes.take_optional("Direction"),
             sharable_group_name: attributes.take_optional("ShareableGroupName"),
+            exclusive_group_name: attributes.take_optional("ExclusiveGroupName"),
         };
         attributes.report_unexpected_if_not_empty()?;
         Ok(result)

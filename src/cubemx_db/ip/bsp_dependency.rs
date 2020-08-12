@@ -13,6 +13,7 @@ pub struct BspDependency {
     pub bsp_mode_name: Option<String>,
     pub user_name: Option<String>,
     pub api: Option<String>,
+    pub component: Option<String>,
     pub condition: Vec<Condition>,    
 }
 
@@ -40,6 +41,7 @@ impl Decode for BspDependency {
             bsp_mode_name: attributes.take_optional("BspModeName"),
             user_name: attributes.take_optional("UserName"),
             api: attributes.take_optional("Api"),
+            component: attributes.take_optional("Component"),
             condition,
         };
         attributes.report_unexpected_if_not_empty()?;

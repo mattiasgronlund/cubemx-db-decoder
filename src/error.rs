@@ -69,7 +69,7 @@ impl Unexpected {
         node: &roxmltree::Node,
         attribute: &roxmltree::Attribute,
     ) -> Result<(), Error> {
-        if config.report_unexpected_errors {
+        if config.report_unexpected_elements_and_attributes {
             Err(Error::UnexpectedAttribute {
                 attribute_name: attribute.name().to_string(),
                 element_name: node.tag_name().name().to_string(),
@@ -84,7 +84,7 @@ impl Unexpected {
         node: &roxmltree::Node,
         element: &roxmltree::Node,
     ) -> Result<(), Error> {
-        if config.report_unexpected_errors {
+        if config.report_unexpected_elements_and_attributes {
             Err(Error::UnexpectedElement {
                 element_name: element.tag_name().name().to_string(),
                 node_name: node.tag_name().name().to_string(),
@@ -100,7 +100,7 @@ impl Unexpected {
         node: &roxmltree::Node,
         child: &roxmltree::Node,
     ) -> Result<(), Error> {
-        if config.report_unexpected_errors {
+        if config.report_unexpected_elements_and_attributes {
             let text = child.text().unwrap_or_default().trim();
             if text.len() > 0 {
                 return Err(Error::UnexpectedText {

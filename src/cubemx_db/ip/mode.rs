@@ -3,6 +3,8 @@ use super::Semaphore;
 use super::Condition;
 use super::SignalLogicalOp;
 use super::BspDependency;
+use super::ContextCondition;
+
 use crate::{
     decode::{AttributeMap, Decode},
     error::Unexpected,
@@ -21,6 +23,7 @@ pub struct Mode {
     pub semaphore: Vec<Semaphore>,
     pub condition: Vec<Condition>,
     pub bsp_dependency: Vec<BspDependency>,
+    pub context_condition: Vec<ContextCondition>,
 }
 
 impl Decode for Mode {
@@ -32,6 +35,7 @@ impl Decode for Mode {
         let mut semaphore = Vec::new();
         let mut condition = Vec::new();
         let mut bsp_dependency = Vec::new();
+        let mut context_condition = Vec::new();
 
         for child in node.children() {
             match child.node_type() {
@@ -45,6 +49,7 @@ impl Decode for Mode {
                     "Semaphore" => semaphore.push(Semaphore::decode(config, child)?),
                     "Condition" => condition.push(Condition::decode(config, child)?),
                     "BspDependency" => bsp_dependency.push(BspDependency::decode(config, child)?),
+                    "ContextCondition" => context_condition.push(ContextCondition::decode(config, child)?),
                     _ => Unexpected::element(config, &node, &child)?,
                 },
                 roxmltree::NodeType::Text => Unexpected::text(config, &node, &child)?,
@@ -58,6 +63,7 @@ impl Decode for Mode {
             shrink_name: attributes.take_optional("ShrinkName"),
             remove_condition: attributes.take_optional("RemoveCondition"),
             remove_disable: attributes.take_optional("RemoveDisable"),
+            context_condition,
             mode_logic_operator,
             signal_logical_op,
             semaphore,

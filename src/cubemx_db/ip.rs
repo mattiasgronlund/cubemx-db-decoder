@@ -4,7 +4,8 @@ use crate::{
     Config, Error,
 };
 mod bsp_dependency;
-mod condition;
+
+mod context_condition;
 mod gpio_pin;
 mod gpio_port;
 mod mode;
@@ -15,11 +16,15 @@ mod possible_value;
 mod ref_mode;
 mod ref_parameter;
 mod ref_signal;
+mod remap_block;
 mod signal;
 mod signal_logical_op;
 mod specific_parameter;
+use super::condition::Condition;
+use context_condition::ContextCondition;
+use remap_block::RemapBlock;
+
 use bsp_dependency::BspDependency;
-use condition::Condition;
 use gpio_pin::GPIOPin;
 use gpio_port::GPIOPort;
 use mode::Mode;
@@ -88,7 +93,6 @@ impl Decode for Ip {
                     "RefSignal" => ref_signal.push(RefSignal::decode(config, child)?),
                     "Semaphore" => semaphore.push(Semaphore::decode(config, child)?),
                     "Condition" => condition.push(Condition::decode(config, child)?),
-
                     _ => Unexpected::element(config, &node, &child)?,
                 },
                 roxmltree::NodeType::Text => Unexpected::text(config, &node, &child)?,
